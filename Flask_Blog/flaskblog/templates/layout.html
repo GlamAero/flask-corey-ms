@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!--boostrap css and js-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for ('static', filename='main.css') }}">
+    
+    {% if title %}
+        <title>Flask Blog - {{ title }}</title>
+    {% else %}
+        <title>Flask Blog</title>
+    {% endif %}
+    
+</head>
+<body>
+    <!--Navigation bar-->
+    <header class="site-header">
+        <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+            <div class="container">
+                <a class="navbar-brand mr-4" href="/">Flask Blog</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarToggle">
+                    <div class="navbar-nav mr-auto">
+                        <a class="nav-item nav-link" href="{{ url_for('main.home') }}">Home</a>
+                        <a class="nav-item nav-link" href="{{ url_for('main.about') }}">About</a>
+                    </div>
+                    <!-- Navbar Right Side -->
+                    <div class="navbar-nav ms-auto">
+                      {% if current_user.is_authenticated %}
+                      <a class="nav-item nav-link" href="{{ url_for('posts.new_post') }}">New Post</a> <!--'new_post' here is the function name 'new_post' and not the url's name'-->
+                        <a class="nav-item nav-link" href="{{ url_for('users.account') }}">Account</a> <!--'account' here is the function name 'account' and not the url's name'-->
+                        <a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a> <!--'logout' here is the function name 'logout' and not the url's name'-->
+                      {% else %}
+                        <a class="nav-item nav-link" href="{{ url_for('users.login') }}">Login</a> <!--'login' here is the function name 'login' and not the url's name'-->
+                        <a class="nav-item nav-link" href="{{ url_for('users.register') }}">Register</a> <!--'register' here is the function name 'register' and not the url's name'-->
+                      {% endif %}
+                      </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    
+    <!--side bar outside the block content-->
+    <main role="main" class="container">
+        <div class="row">
+          <div class="col-md-8"> <!--the block content takes 8 out of 12 possible width of the space/screen-->
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}  <!--'with_categories' means the 'success'(or similar bootstrap color used) message that comes in 'flaskblog.py for flash messages'-->
+
+              {% if messages %}
+                {% for category,message in messages %}
+                  <div class="alert alert-{{ category }}">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+
+            {% endwith %}
+            
+            {% block content %}
+            
+            {% endblock content%}
+
+          </div>
+          <div class="col-md-4"> <!--the side bar takes 4 out of 12 possible width of the space/screen-->
+            <div class="content-section">
+              <h3>Our Sidebar</h3>
+              <p class='text-muted'>You can put any information here you'd like.
+                <ul class="list-group">
+                  <li class="list-group-item list-group-item-light">Latest Posts</li>
+                  <li class="list-group-item list-group-item-light">Announcements</li>
+                  <li class="list-group-item list-group-item-light">Calendars</li>
+                  <li class="list-group-item list-group-item-light">etc</li>
+                </ul>
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
+    
+    
+
+    <!--optional bootstrap and popper javascript-->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+</body>
+</html>

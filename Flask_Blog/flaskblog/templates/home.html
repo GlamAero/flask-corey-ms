@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    
+    {% for post in posts.items %}  <!--it should have been "posts" instead of 'posts.item', but when paginating, use: 'posts.item'-->
+
+        <article class="media content-section">
+            <img class="rounded circle  article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">  <!--'author' gives 'User.query.all()' where it gives all the elements(objects) of the User model, including 'image_file'-->
+            <div class="media-body">
+                <div class="article-metadata">
+                    <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>  <!--'author' gives 'User.query.all()' where it gives all the elements(objects) of the User model-->
+                    <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+                </div>
+                <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>  <!--'post' here is a function and not url-->
+                <p class="article-content">{{ post.content }}</p>
+            </div>
+        </article>
+
+    {% endfor %}
+
+    {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}  <!--'page_num' is the page number-->
+        {% if page_num %}  <!--'page_num' is the page number-->
+            {% if posts.page == page_num %}  <!--'posts.page' is the current page. And 'page_num' is the page number--><!--'if posts.page == page_num' means if you are on the current page-->
+                <a class="btn btn-info mb-4" href="{{ url_for('main.home', page=page_num) }}">{{ page_num }}</a>
+            {% else %}
+                <a class="btn btn-outline-info mb-4" href="{{ url_for('main.home', page=page_num) }}">{{ page_num }}</a>
+            {% endif %}
+        {% else %}
+            ...
+        {% endif %}
+    {% endfor %}
+
+{% endblock content %}

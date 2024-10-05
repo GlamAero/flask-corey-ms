@@ -1,0 +1,50 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+    <!--this codes are copied from home.html and edited to fit as appropriate-->
+    <article class="media content-section">
+        <img class="rounded circle  article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">  <!--'author' gives 'User.query.all()' where it gives all the elements(objects) of the User model, including 'image_file'-->
+        <div class="media-body">
+            <div class="article-metadata">
+
+                <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>  <!--'author' gives 'User.query.all()' where it gives all the elements(objects) of the User model-->
+                <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+
+                {% if post.author == current_user %}
+                    <div>
+                        <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('posts.update_post', post_id=post.id) }}">Update</a>  <!--'update_post' is the function name and not the url-->
+                        <button type="button" class="btn btn-danger btn-sm m-1" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>  <!--'data-toggle="modal" data-target="#exampleModal" ' is got from bootstrap, from the modal component, from the 'live demo' section-->
+                    </div>
+                {% endif %}
+
+            </div>
+            <h2 class="article-title">{{ post.title }}</h2>
+            <p class="article-content">{{ post.content }}</p>
+        </div>
+    </article>
+
+    <!-- Modal section- (from bootstrap modal component(in live demo)). This is used for the delete button above -->
+
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Delete Post?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+          <form action="{{ url_for('posts.delete_post', post_id=post.id) }}" method="POST">  <!--'delete_post' is a function name in the route.py and not the url-->
+            <input class="btn btn-danger" type="submit" value="Delete">
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
